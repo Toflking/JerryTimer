@@ -127,7 +127,7 @@ public class JerryTimerClient implements ClientModInitializer {
 		String plain = normalize(stripFormatting(message));
 
 		for (String type : JERRY_TYPES) {
-			if (plain.contains(type) && plain.contains("Jerry") && plain.contains("!") && !plain.contains(":")){
+			if (plain.contains(type) && plain.contains("Jerry") && plain.contains("!") && !plain.contains(":") && !plain.contains("Talisman")){
 
 				ChatFormatting color = switch (type) {
 					case "Green" -> ChatFormatting.GREEN;
@@ -202,7 +202,7 @@ public class JerryTimerClient implements ClientModInitializer {
 			} else {
 				graphics.drawString(font, text, x, y, 0xFF00FF00, true);
 				if (minutes == 6 && seconds == 0 && !titleShown) {
-					mc.gui.setTitle(Component.literal("Jerry Cooldown fertig")
+					mc.gui.setTitle(Component.literal("Jerry Cooldown over")
 							.withStyle(ChatFormatting.GOLD));
 				}
 			}

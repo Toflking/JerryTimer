@@ -20,8 +20,6 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 public class JerryTimerClient implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("jerrytimer");
 
-	private static String lastServer = null;
-
 	private static final java.nio.file.Path CONFIG_PATH =
 			net.fabricmc.loader.api.FabricLoader.getInstance()
 					.getConfigDir()
@@ -57,6 +55,8 @@ public class JerryTimerClient implements ClientModInitializer {
 	static int hudX = 10;
     static int hudY = 10;
 	private static int dragOffX = 0, dragOffY = 0;
+	private static boolean pendingOpenMoveScreen = false;
+	private static boolean pendingCloseMoveScreen = false;
 
 	private static int mouseXGui(Minecraft mc) {
 		double mx = mc.mouseHandler.xpos(); // raw pixels
@@ -66,20 +66,24 @@ public class JerryTimerClient implements ClientModInitializer {
 		double my = mc.mouseHandler.ypos();
 		return (int) (my * mc.getWindow().getGuiScaledHeight() / (double) mc.getWindow().getScreenHeight());
 	}
-
 	private static boolean leftMouseDown(Minecraft mc) {
 		return mc.mouseHandler.isLeftPressed();
 	}
 
-	private static boolean pendingOpenMoveScreen = false;
-	private static boolean pendingCloseMoveScreen = false;
-
 
 	private static boolean titleShown = false;
 	private static long lastResetMs = -1;
+	private static String lastServer = null;
 
 	private static final java.util.regex.Pattern MC_FORMATTING =
 			java.util.regex.Pattern.compile("§[0-9A-FK-ORa-fk-or]");
+
+	private static final java.util.List<String> JERRY_TYPES = java.util.List.of(
+			"Green",
+			"Blue",
+			"Purple",
+			"Golden"
+	);
 
 	private static String normalize(String s) {
 		s = MC_FORMATTING.matcher(s).replaceAll("");
@@ -90,41 +94,8 @@ public class JerryTimerClient implements ClientModInitializer {
 		return s;
 	}
 
-
-	private static String stripFormatting(String s) {
-		return MC_FORMATTING.matcher(s).replaceAll("");
-	}
-
-	private static final java.util.List<String> JERRY_TYPES = java.util.List.of(
-			"Green",
-			"Blue",
-			"Purple",
-			"Golden"
-	);
-	private static final java.util.List<String> JERRY_TEMPLATES = java.util.List.of(
-			"You discovered a %s!",
-			"There is a %s!",
-			"You found a %s!",
-			"You located a hidden %s!",
-			"A wild %s spawned!",
-			"Some %s was hiding, but you found it!",
-			"A %s appeared!"
-	);
-
-	private static final java.util.Set<String> TRIGGERS;
-
-	static {
-		java.util.Set<String> set = new java.util.HashSet<>();
-		for (String t : JERRY_TEMPLATES) {
-			for (String type : JERRY_TYPES) {
-				set.add(String.format(t, type));
-			}
-		}
-		TRIGGERS = java.util.Collections.unmodifiableSet(set);
-	}
-
 	private static void handle(String message) {
-		String plain = normalize(stripFormatting(message));
+		String plain = normalize(message);
 
 		for (String type : JERRY_TYPES) {
 			if (plain.contains(type) && plain.contains("Jerry") && plain.contains("!") && !plain.contains(":") && !plain.contains("Talisman")){

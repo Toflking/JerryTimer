@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +60,7 @@ public class JerryTimerClient implements ClientModInitializer {
 	private static boolean pendingCloseMoveScreen = false;
 
 	private static int mouseXGui(Minecraft mc) {
-		double mx = mc.mouseHandler.xpos(); // raw pixels
+		double mx = mc.mouseHandler.xpos();
 		return (int) (mx * mc.getWindow().getGuiScaledWidth() / (double) mc.getWindow().getScreenWidth());
 	}
 	private static int mouseYGui(Minecraft mc) {
@@ -72,6 +73,7 @@ public class JerryTimerClient implements ClientModInitializer {
 
 
 	private static boolean titleShown = false;
+	boolean soundPlayed = false;
 	private static long lastResetMs = -1;
 	private static String lastServer = null;
 
@@ -168,14 +170,24 @@ public class JerryTimerClient implements ClientModInitializer {
 			if (font == null) return;
 
 			int x = hudX, y = hudY;
+			if (!mc.options.hideGui){
 			if (minutes < 6) {
 				graphics.drawString(font, text, x, y, 0xFFFF0000, true);
+				if (soundPlayed) {
+					soundPlayed = false;
+				}
 			} else {
 				graphics.drawString(font, text, x, y, 0xFF00FF00, true);
 				if (minutes == 6 && seconds == 0 && !titleShown) {
 					mc.gui.setTitle(Component.literal("Jerry Cooldown over")
 							.withStyle(ChatFormatting.GOLD));
+                    if(mc.player != null && !soundPlayed) {
+						System.out.println("Hello");
+						mc.player.playSound(SoundEvents.VILLAGER_HURT, 1.3f, 1.0f);
+						soundPlayed = true;
+					}
 				}
+			}
 			}
 		});
 

@@ -56,7 +56,7 @@ public class MoveHudScreen extends Screen {
         int mx = (int) ev.x();
         int my = (int) ev.y();
 
-        if (ev.button() == 0 && insideBox(mx, my)) { // 0 = linke Maustaste
+        if (ev.button() == 0 && insideBox(mx, my)) {
             dragging = true;
             dragOffX = mx - hudX;
             dragOffY = my - hudY;

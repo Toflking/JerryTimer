@@ -3,21 +3,18 @@
 	"id": "jerrytimer",
 	"version": "${version}",
 	"name": "JerryTimer",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Timer and spawn reminders for Jerry in Hypixel Skyblock",
 	"authors": [
-		"Me!"
+		"Toflking"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/Toflking/JerryTimer",
+		"sources": "https://github.com/Toflking/JerryTimer"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/jerrytimer/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
-			"toflking.jerrytimer.JerryTimer"
-		],
 		"client": [
 			"toflking.jerrytimer.JerryTimerClient"
 		]
@@ -30,9 +27,9 @@
 		}
 	],
 	"depends": {
-		"fabricloader": ">=0.18.4",
-		"minecraft": "~1.21.10",
-		"java": ">=21",
-		"fabric-api": "*"
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.1.2",
+		"java": ">=25",
+		"fabric-api": ">=0.152.1+26.1.2"
 	}
 }

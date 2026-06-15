@@ -1,7 +1,7 @@
 package toflking.jerrytimer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -24,16 +24,16 @@ public class MoveHudScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        super.render(graphics, mouseX, mouseY, partialTick);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.font == null) return;
         int w = mc.font.width(preview);
         int h = mc.font.lineHeight;
         graphics.fill(hudX - 2, hudY - 2, hudX + w + 2, hudY + h + 2, 0x80FFFFFF);
-        graphics.drawString(mc.font, preview, hudX, hudY, 0xFFFFFFFF, true);
-        graphics.drawString(mc.font, "Drag the timer. Esc to exit.", 10, 10, 0xFFFFFFFF, true);
+        graphics.text(mc.font, preview, hudX, hudY, 0xFFFFFFFF, true);
+        graphics.text(mc.font, "Drag the timer. Esc to exit.", 10, 10, 0xFFFFFFFF, true);
     }
 
     @Override

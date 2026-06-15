@@ -5,21 +5,26 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 
 public class JerryTimerClient implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("jerrytimer");
+
+	private static final Identifier HUD_ID =
+			Identifier.fromNamespaceAndPath("jerrytimer", "hud");
 
 	private static final java.nio.file.Path CONFIG_PATH =
 			net.fabricmc.loader.api.FabricLoader.getInstance()
@@ -155,7 +160,7 @@ public class JerryTimerClient implements ClientModInitializer {
 		}));
 
 
-		HudRenderCallback.EVENT.register((GuiGraphics graphics, net.minecraft.client.DeltaTracker tickDelta) -> {
+		HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, HUD_ID, (GuiGraphicsExtractor graphics, net.minecraft.client.DeltaTracker tickDelta) -> {
 			if (lastResetMs < 0) return;
 
 			long elapsedMs = System.currentTimeMillis() - lastResetMs;
@@ -172,12 +177,12 @@ public class JerryTimerClient implements ClientModInitializer {
 			int x = hudX, y = hudY;
 			if (!mc.options.hideGui){
 			if (minutes < 6) {
-				graphics.drawString(font, text, x, y, 0xFFFF0000, true);
+				graphics.text(font, text, x, y, 0xFFFF0000, true);
 				if (soundPlayed) {
 					soundPlayed = false;
 				}
 			} else {
-				graphics.drawString(font, text, x, y, 0xFF00FF00, true);
+				graphics.text(font, text, x, y, 0xFF00FF00, true);
 				if (minutes == 6 && seconds == 0 && !titleShown) {
 					mc.gui.setTitle(Component.literal("Jerry Cooldown over")
 							.withStyle(ChatFormatting.GOLD));
